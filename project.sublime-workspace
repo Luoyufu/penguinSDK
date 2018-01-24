@@ -520,12 +520,11 @@
 	"buffers":
 	[
 		{
-			"file": "project.sublime-project",
+			"file": "penguinsdk/auth/credential.py",
 			"settings":
 			{
-				"buffer_size": 285,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
+				"buffer_size": 3719,
+				"line_ending": "Windows"
 			}
 		}
 	],
@@ -773,10 +772,13 @@
 	},
 	"expanded_folders":
 	[
-		"/D/GitSpace/penguinsdk"
+		"/D/GitSpace/penguinsdk",
+		"/D/GitSpace/penguinsdk/penguinsdk",
+		"/D/GitSpace/penguinsdk/penguinsdk/auth"
 	],
 	"file_history":
 	[
+		"/D/GitSpace/penguinsdk/project.sublime-project",
 		"/D/GitSpace/penguinsdk/penguinsdk/utils.py",
 		"/D/GitSpace/penguinsdk/penguinsdk/exceptions.py",
 		"/D/GitSpace/penguinsdk/penguinsdk/doclinks/api.py",
@@ -903,12 +905,11 @@
 		"/D/GitSpace/mvp/mvpsite/mportal/distr/penguinsdk/doclink/meta_parser.py",
 		"/D/GitSpace/mvp/mvpsite/mportal/distr/penguinsdk/doclink/http_methods.py",
 		"/D/GitSpace/mvp/mvpsite/mportal/distr/penguinsdk/doclink/exceptions.py",
-		"/D/GitSpace/mvp/mvpsite/mportal/distr/penguinsdk/doclink/builder.py",
-		"/D/GitSpace/mvp/mvpsite/mportal/distr/penguinsdk/doclink/utils.py"
+		"/D/GitSpace/mvp/mvpsite/mportal/distr/penguinsdk/doclink/builder.py"
 	],
 	"find":
 	{
-		"height": 30.0
+		"height": 70.0
 	},
 	"find_in_files":
 	{
@@ -946,25 +947,25 @@
 			[
 				{
 					"buffer": 0,
-					"file": "project.sublime-project",
-					"semi_transient": false,
+					"file": "penguinsdk/auth/credential.py",
+					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 285,
+						"buffer_size": 3719,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								285,
-								285
+								0,
+								0
 							]
 						],
 						"settings":
 						{
 							"bracket_highlighter.busy": false,
-							"bracket_highlighter.clone": 75,
+							"bracket_highlighter.clone": -1,
 							"bracket_highlighter.clone_locations":
 							{
 								"close":
@@ -1111,8 +1112,9 @@
 								"bh_c_define_close",
 								"bh_c_define_content"
 							],
-							"syntax": "Packages/zzz A File Icon zzz/aliases/JSON (Sublime).sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,

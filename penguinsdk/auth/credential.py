@@ -14,18 +14,18 @@ class CredentialSession(object):
     def __init__(self, credential, consumer):
         self._consumer = consumer
         self.credential = credential
-        self._session_params = {}
+        self._partial_params = {}
 
     @property
-    def session_params(self):
-        return self._session_params
+    def partial_params(self):
+        return self._partial_params
 
     def set_partial_parmas(self, *args, **kwargs):
-        self._partial_params.update(*args, **kwargs)
+        self.partial_params.update(*args, **kwargs)
 
     def __getattr__(self, name):
         return partial(
-            self._consumer.apis[name].partial(**self._session_params))
+            self._consumer.apis[name].partial(**self.partial_params))
 
 
 class Credential(object):

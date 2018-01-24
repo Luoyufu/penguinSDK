@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from ..doclink import Consumer
+from doclink import Consumer
 from ..endpoints import api as endpoints
 from .. import utils
 
