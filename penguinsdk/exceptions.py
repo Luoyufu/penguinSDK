@@ -26,3 +26,8 @@ class CredentialError(PenguinError):
     def __init__(self, msg=None):
         super(CredentialError, self).__init__(
             msg or 'credential error')
+
+
+class TokenRefreshFailedError(PenguinError):
+    def __init__(self, msg='token refresh failed'):
+        super(TokenRefreshFailedError, self).__init__(msg)

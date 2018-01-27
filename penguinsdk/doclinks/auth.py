@@ -59,7 +59,7 @@ def refresh_token(resp):
     </meta>
     """
     data = resp.json_['data']
-    expiry = utils.parse_expiry(data.get('expires_in'))
+    expiry = utils.parse_expiry_timestamp(data.get('expires_in'))
     data.update(expiry=expiry)
 
     return data

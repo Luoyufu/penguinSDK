@@ -3,10 +3,15 @@
 from functools import partial
 from time import time
 
+from doclink.exceptions import StatusCodeUnexpectedError
+
 from .. import utils
 from ..doclinks import auth
 from ..doclinks import api
-from ..exceptions import CredentialError
+from ..exceptions import (
+    CredentialError,
+    TokenRefreshFailedError,
+    RespWithFailedCodeError,)
 
 
 class CredentialSession(object):
@@ -91,10 +96,15 @@ class Credential(object):
         if not all((self.client_id, self.refresh_token)):
             raise CredentialError('client_id or refresh_token is None')
 
-        data = auth.refresh_token(
-            openid=self.openid,
-            client_id=self.client_id,
-            refresh_token=self.refresh_token)
+        try:
+            data = auth.refresh_token(
+                openid=self.openid,
+                client_id=self.client_id,
+                refresh_token=self.refresh_token)
+        except StatusCodeUnexpectedError as e:
+            raise TokenRefreshFailedError('resp with status_code:{}'.format(e.status_code))
+        except RespWithFailedCodeError as e:
+            raise TokenRefreshFailedError('resp with failed code:{}'.format(e.code))
 
         self.access_token = data.get('access_token')
         self.expiry = data.get('expiry')
