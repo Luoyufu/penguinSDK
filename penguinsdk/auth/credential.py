@@ -105,6 +105,8 @@ class Credential(object):
             raise TokenRefreshFailedError('resp with status_code:{}'.format(e.status_code))
         except RespWithFailedCodeError as e:
             raise TokenRefreshFailedError('resp with failed code:{}'.format(e.code))
+        except IOError:
+            raise TokenRefreshFailedError('connection failed')
 
         self.access_token = data.get('access_token')
         self.expiry = data.get('expiry')
