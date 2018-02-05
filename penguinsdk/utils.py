@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import datetime
+from functools import partial
 from time import time
 
 from .exceptions import RespWithFailedCodeError
@@ -71,3 +72,15 @@ def preprocess_resp(resp):
 
     check_resp_code(resp_json, resp)
     resp.json_ = resp_json
+
+
+def calculate_file_hash(self, hash_factory, file_obj, read_factor=None):
+    read_factor = read_factor or 128
+    file_obj.seek(0)
+    hash_obj = hash_factory()
+    read_size = read_factor * hash_obj.block_size
+
+    for chunk in iter(partial(file_obj.read, read_size), b''):
+        hash_obj.update(chunk)
+
+    return hash_obj.hexdigest()

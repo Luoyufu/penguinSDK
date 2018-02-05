@@ -38,7 +38,8 @@ def media_info(resp):
 
 @consumer.post(endpoints.publish_video)
 def publish_video(resp):
-    """
+    """Upload a video and publish it.
+
     <meta>
         args:
             query:
@@ -49,10 +50,34 @@ def publish_video(resp):
                 - tags
                 - cat
                 - md5
-                - desc
+                - desc: ''
                 - apply:
                     required: False
-            file: media
+            multipart: media:
+    </meta>
+    """
+    return resp.json_['data']['transaction_id']
+
+
+@consumer.post(endpoints.publish_uploaded_video)
+def publish_uploaded_video(resp):
+    """Publish a uploaded video.
+
+    Vid is pointted to the uploaded vidoe.
+
+    <meta>
+        args:
+            query:
+                - access_token
+                - openid:
+                    required: False
+                - title
+                - tags
+                - cat
+                - desc: ''
+                - apply:
+                    required: False
+                -vid
     </meta>
     """
     return resp.json_['data']['transaction_id']
@@ -69,7 +94,7 @@ def upload_video_thumbnail(resp):
                     required: False
                 - md5
                 - vid
-            file: media
+            multipart: media
     </meta>
     """
     return resp.json_['data']['transaction_id']
@@ -85,6 +110,40 @@ def transaction_info(resp):
                 - openid:
                     required: False
                 - transaction_id
+    </meta>
+    """
+    return resp.json_['data']
+
+
+@consumer.get(endpoints.apply_for_upload)
+def apply_for_video_upload(resp):
+    """
+    <meta>
+        args:
+            query:
+                - access_token
+                - openid:
+                    required: False
+                - size
+                - md5
+                - sha
+    </meta>
+    """
+    return resp.json_['data']['transaction_id']
+
+
+@consumer.post(endpoints.upload_video_chunk)
+def upload_video_chunk(resp):
+    """
+    <meta>
+        args:
+            query:
+                - access_token
+                - openid:
+                    required: False
+                - transaction_id
+                - start_offset: 0
+            file: mediatrunk
     </meta>
     """
     return resp.json_['data']

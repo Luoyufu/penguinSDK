@@ -25,7 +25,10 @@ api = Endpoints(
     publish_video='/article/authpubvid',
     transaction_info='/transaction/infoauth',
     media_info='/media/basicinfoauth',
-    upload_video_thumbnail='/video/authvideopic')
+    upload_video_thumbnail='/video/authvideopic',
+    apply_for_video_upload='/video/authuploadready',
+    upload_video_chunk='/video/authuploadtrunk',
+    publish_uploaded_video='/article/authpubvideo')
 
 
 def get_url(consumer_name, endpoint_name):
