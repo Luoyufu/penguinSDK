@@ -3,6 +3,7 @@
 from doclink import Consumer
 from ..endpoints import api as endpoints
 from .. import utils
+from ..exceptions import TransactionFailedError
 
 consumer = Consumer(
     endpoints.base_uri,
@@ -53,7 +54,7 @@ def publish_video(resp):
                 - desc: ''
                 - apply:
                     required: False
-            multipart: media:
+            multipart: media
     </meta>
     """
     return resp.json_['data']['transaction_id']
@@ -77,7 +78,7 @@ def publish_uploaded_video(resp):
                 - desc: ''
                 - apply:
                     required: False
-                -vid
+                - vid
     </meta>
     """
     return resp.json_['data']['transaction_id']
@@ -115,7 +116,7 @@ def transaction_info(resp):
     return resp.json_['data']
 
 
-@consumer.get(endpoints.apply_for_upload)
+@consumer.post(endpoints.apply_for_video_upload)
 def apply_for_video_upload(resp):
     """
     <meta>

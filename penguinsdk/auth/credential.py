@@ -6,6 +6,9 @@ from time import time
 from doclink.exceptions import StatusCodeUnexpectedError
 
 from .. import utils
+from .. import (
+    uploader,
+    publisher)
 from ..doclinks import auth
 from ..doclinks import api
 from ..exceptions import (
@@ -16,10 +19,14 @@ from ..exceptions import (
 
 class CredentialSession(object):
 
-    def __init__(self, credential, consumer):
+    def __init__(self, credential, consumer,
+                 uploader=uploader,
+                 publisher=publisher):
         self._consumer = consumer
         self.credential = credential
         self._partial_params = {}
+        self._uploader = uploader
+        self._publisher = publisher
 
     @property
     def partial_params(self):
@@ -27,6 +34,25 @@ class CredentialSession(object):
 
     def set_partial_parmas(self, *args, **kwargs):
         self.partial_params.update(*args, **kwargs)
+
+    def upload_video(self, file_path):
+        return self._uploader.upload_video(file_path=file_path, **self.partial_params)
+
+    def upload_thumbnail(self, vid, file_pointer):
+        return self._uploader.upload_thumbnail(
+            vid=vid, file_pointer=file_pointer, **self.partial_params)
+
+    def publish_video(self, publish_info, file_pointer):
+        return self._publisher.publish_video(
+            publish_info=publish_info,
+            file_pointer=file_pointer,
+            **self.partial_params)
+
+    def publish_uploaded_video(self, publish_info, vid):
+        return self._publisher.publish_uploaded_video(
+            publish_info=publish_info,
+            vid=vid,
+            **self.partial_params)
 
     def __getattr__(self, name):
         return partial(
@@ -36,7 +62,7 @@ class CredentialSession(object):
 class Credential(object):
     """docstring for Credential"""
 
-    def __init__(self, openid, access_token=None,
+    def __init__(self, openid=None, access_token=None,
                  expiry=None, refresh_token=None, client_id=None):
         self.access_token = access_token
         self.openid = openid
@@ -84,8 +110,8 @@ class Credential(object):
             return self.check_token()
 
     def check_token(self):
-        if self.access_token is None:
-            raise CredentialError('access_token is None')
+        if not all((self.access_token, self.openid)):
+            raise CredentialError('both openid and access_token required')
 
         return auth.check_token(
             openid=self.openid,

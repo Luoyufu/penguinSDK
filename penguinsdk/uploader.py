@@ -8,6 +8,7 @@
 #
 #   Copyright (c) 2017 麦禾互动. All rights reserved.
 
+from functools import partial
 from hashlib import (
     md5,
     sha1)
@@ -17,8 +18,9 @@ import requests
 
 from . import utils
 from .doclinks import api
+from .exceptions import TransactionFailedError
 
-TRUNK_SIZE = 5 * 1024 * 1024  # 5MB
+TRUNK_SIZE = 4 * 1024 * 1024  # 5MB
 
 
 class Uploader(object):
@@ -27,18 +29,33 @@ class Uploader(object):
         self._openid = openid
         self._access_token = access_token
 
-    def upload_video(self, file_path):
+    def upload_video(self, file_path, monitor_callback=print):
         file_size = os.path.getsize(file_path)
 
         with open(file_path, 'rb') as file_obj:
             transaction_id = self._apply_for_video_upload(file_size, file_obj)
             file_obj.seek(0)
-            iter(self._upload_video_trunk(file_obj, transaction_id), StopIteration)
+
+            for result in iter(partial(self._upload_video_trunk, file_obj, transaction_id),
+                               StopIteration):
+                monitor_callback(result)
+
+            transcation_info_params = dict(access_token=self._access_token,
+                                           transaction_id=transaction_id)
+            if self._openid:
+                transcation_info_params.update(openid=self._openid)
+
+            transaction_info = api.transaction_info(**transcation_info_params)
+
+            if transaction_info['transaction_status'] == u'失败':
+                raise TransactionFailedError(transaction_info)
+
+            return transaction_info['vid']
 
     def _upload_video_trunk(self, file_obj, transaction_id):
         params = {
             'access_token': self._access_token,
-            'start_offset': self.file_obj.tell(),
+            'start_offset': file_obj.tell(),
             'transaction_id': transaction_id,
             'mediatrunk': (file_obj.read(TRUNK_SIZE))
         }
@@ -50,6 +67,8 @@ class Uploader(object):
 
         if result['end_offset'] == result['start_offset']:
             return StopIteration
+        else:
+            return result
 
     def _prepare_apply_params(self, file_size, file_obj):
         md5_hash = utils.calculate_file_hash(md5, file_obj)
@@ -105,7 +124,7 @@ class Uploader(object):
 
 
 def upload_video(access_token, file_path, openid=None):
-    Uploader(access_token, openid).upload_video(file_path)
+    return Uploader(access_token, openid).upload_video(file_path)
 
 
 def upload_thumbnail(access_token, vid, file_pointer, openid=None):
