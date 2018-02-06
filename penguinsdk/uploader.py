@@ -29,7 +29,7 @@ class Uploader(object):
         self._openid = openid
         self._access_token = access_token
 
-    def upload_video(self, file_path, monitor_callback=print):
+    def upload_video(self, file_path, monitor_callback):
         file_size = os.path.getsize(file_path)
 
         with open(file_path, 'rb') as file_obj:
@@ -123,8 +123,8 @@ class Uploader(object):
         return requests.get(thumbnail_url)
 
 
-def upload_video(access_token, file_path, openid=None):
-    return Uploader(access_token, openid).upload_video(file_path)
+def upload_video(access_token, file_path, openid=None, monitor_callback=print):
+    return Uploader(access_token, openid).upload_video(file_path, monitor_callback)
 
 
 def upload_thumbnail(access_token, vid, file_pointer, openid=None):
