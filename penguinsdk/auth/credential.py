@@ -35,8 +35,9 @@ class CredentialSession(object):
     def set_partial_parmas(self, *args, **kwargs):
         self.partial_params.update(*args, **kwargs)
 
-    def upload_video(self, file_path):
-        return self._uploader.upload_video(file_path=file_path, **self.partial_params)
+    def upload_video(self, file_path, monitor_callback=None):
+        return self._uploader.upload_video(file_path=file_path, monitor_callback=monitor_callback,
+                                           **self.partial_params)
 
     def upload_thumbnail(self, vid, file_pointer):
         return self._uploader.upload_thumbnail(

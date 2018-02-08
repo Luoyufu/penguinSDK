@@ -3,7 +3,6 @@
 from doclink import Consumer
 from ..endpoints import api as endpoints
 from .. import utils
-from ..exceptions import TransactionFailedError
 
 consumer = Consumer(
     endpoints.base_uri,
@@ -95,7 +94,7 @@ def upload_video_thumbnail(resp):
                     required: False
                 - md5
                 - vid
-            multipart: media
+            file: media
     </meta>
     """
     return resp.json_['data']['transaction_id']

@@ -14,13 +14,11 @@ from hashlib import (
     sha1)
 import os
 
-import requests
-
 from . import utils
 from .doclinks import api
 from .exceptions import TransactionFailedError
 
-TRUNK_SIZE = 4 * 1024 * 1024  # 5MB
+TRUNK_SIZE = 4 * 1024 * 1024  # 4MB
 
 
 class Uploader(object):
@@ -36,9 +34,12 @@ class Uploader(object):
             transaction_id = self._apply_for_video_upload(file_size, file_obj)
             file_obj.seek(0)
 
+            monitor_callback('upload start')
             for result in iter(partial(self._upload_video_trunk, file_obj, transaction_id),
                                StopIteration):
                 monitor_callback(result)
+
+            monitor_callback('upload finished')
 
             transcation_info_params = dict(access_token=self._access_token,
                                            transaction_id=transaction_id)
@@ -88,25 +89,6 @@ class Uploader(object):
         params = self._prepare_apply_params(file_size, file_obj)
         return api.apply_for_video_upload(**params)
 
-    def upload_thumbnail(self, vid, file_pointer):
-        try:
-            # file_pointer is a file_path
-            with open(file_pointer) as file_obj:
-                md5_hash = utils.calculate_file_hash(md5, file_obj)
-                file_obj.seek(0)
-                params = self._prepare_thumbnail_params(vid, md5_hash, file_obj)
-                return api.upload_video_thumbnail(**params)
-        except (IOError, TypeError):
-            # file_pointer is a bytes from file_read or network
-            if isinstance(file_pointer, (tuple, list)):
-                md5_obj = md5()
-                md5_obj.update(file_pointer[1])
-                md5_hash = md5_obj.hexdigest()
-
-            params = self._prepare_thumbnail_params(vid, md5_hash, file_pointer)
-        else:
-            raise ValueError('file_pointer should be a file_path or a tuple(file_name, content)')
-
     def _prepare_thumbnail_params(self, vid, md5_hash, file_info):
         params = {
             'access_token': self._access_token,
@@ -119,11 +101,32 @@ class Uploader(object):
 
         return params
 
-    def _fetch_thumbnail(self, thumbnail_url):
-        return requests.get(thumbnail_url)
+    def upload_thumbnail(self, vid, file_pointer):
+        try:
+            if isinstance(file_pointer, (tuple, list)):
+                md5_obj = md5()
+                md5_obj.update(file_pointer[1])
+                md5_hash = md5_obj.hexdigest()
+                params = self._prepare_thumbnail_params(vid, md5_hash, file_pointer)
+
+                return api.upload_video_thumbnail(**params)
+            else:
+                with open(file_pointer) as file_obj:
+                    md5_hash = utils.calculate_file_hash(md5, file_obj)
+                    file_obj.seek(0)
+                    params = self._prepare_thumbnail_params(vid, md5_hash, file_obj)
+
+                    return api.upload_video_thumbnail(**params)
+        except (IOError, TypeError, IndexError):
+            raise ValueError('file_pointer should be a file_path or a tuple(file_name, content)')
 
 
-def upload_video(access_token, file_path, openid=None, monitor_callback=print):
+def upload_video(access_token, file_path, openid=None,
+                 monitor_callback=None):
+    def print_monitor_callback(result):
+        print(result)
+
+    monitor_callback = monitor_callback or print_monitor_callback
     return Uploader(access_token, openid).upload_video(file_path, monitor_callback)
 
 
