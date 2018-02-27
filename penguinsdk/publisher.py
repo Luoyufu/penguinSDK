@@ -5,7 +5,7 @@ import os
 
 from .utils import calculate_file_hash
 from doclink.utils import guess_filename
-from doclinks import api
+from .doclinks import api
 
 
 class Publisher(object):

@@ -18,7 +18,7 @@ class Client(object):
 
         return self._oauth2_flow
 
-    def create_credential(self, openid, access_token=None,
+    def create_credential(self, openid=None, access_token=None,
                           expiry=None, refresh_token=None):
         return Credential(openid, access_token=access_token,
                           expiry=expiry, refresh_token=refresh_token,

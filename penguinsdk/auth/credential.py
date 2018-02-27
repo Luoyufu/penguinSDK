@@ -112,7 +112,7 @@ class Credential(object):
 
     def check_token(self):
         if not all((self.access_token, self.openid)):
-            raise CredentialError('both openid and access_token required')
+            return False
 
         return auth.check_token(
             openid=self.openid,

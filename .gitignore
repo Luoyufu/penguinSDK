@@ -104,3 +104,4 @@ ENV/
 /project.sublime-project
 /Vagrantfile
 /.vagrant/
+/.pytest_cache/
