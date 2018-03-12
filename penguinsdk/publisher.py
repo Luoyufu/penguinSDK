@@ -5,11 +5,11 @@ import os
 
 from .utils import calculate_file_hash
 from doclink.utils import guess_filename
-from .doclinks import api
 
 
 class Publisher(object):
-    def __init__(self, access_token, openid=None):
+    def __init__(self, consumer, access_token, openid=None):
+        self._consumer = consumer
         self._access_token = access_token
         self._openid = openid
 
@@ -48,7 +48,7 @@ class Publisher(object):
             md5_hash = calculate_file_hash(md5, file_obj)
             file_obj.seek(0)
 
-            return api.publish_video(
+            return self._consumer.publish_video(
                 **prepare_params(publish_info, md5_hash, file_pointer))
         else:
             try:
@@ -61,14 +61,14 @@ class Publisher(object):
                 md5_hash = calculate_file_hash(md5, file_pointer)
                 file_pointer.seek(0)
 
-                return api.publish_video(
+                return self._consumer.publish_video(
                     **prepare_params(publish_info, md5_hash, file_pointer))
             else:
                 file_name = os.path.basename(file_pointer)
                 md5_hash = calculate_file_hash(md5, file_obj)
                 file_obj.seek(0)
 
-                return api.publish_video(
+                return self._consumer.publish_video(
                     **prepare_params(publish_info, md5_hash, (file_name, file_obj)))
             finally:
                 if file_obj:
@@ -93,12 +93,12 @@ class Publisher(object):
 
             return params
 
-        return api.publish_uploaded_video(**prepare_params(publish_info, vid))
+        return self._consumer.publish_uploaded_video(**prepare_params(publish_info, vid))
 
 
-def publish_video(access_token, publish_info, file_pointer, openid=None):
-    return Publisher(access_token, openid).publish_video(publish_info, file_pointer)
+def publish_video(consumer, access_token, publish_info, file_pointer, openid=None):
+    return Publisher(consumer, access_token, openid).publish_video(publish_info, file_pointer)
 
 
-def publish_uploaded_video(access_token, publish_info, vid, openid=None):
-    return Publisher(access_token, openid).publish_uploaded_video(publish_info, vid)
+def publish_uploaded_video(consumer, access_token, publish_info, vid, openid=None):
+    return Publisher(consumer, access_token, openid).publish_uploaded_video(publish_info, vid)

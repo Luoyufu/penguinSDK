@@ -1,77 +1,43 @@
 # -*- coding: utf-8 -*-
 
-from functools import partial
 from time import time
 
 from doclink.exceptions import StatusCodeUnexpectedError
 
 from .. import utils
-from .. import (
-    uploader,
-    publisher)
 from ..doclinks import auth
-from ..doclinks import api
 from ..exceptions import (
     CredentialError,
     TokenRefreshFailedError,
-    RespWithFailedCodeError,)
-
-
-class CredentialSession(object):
-
-    def __init__(self, credential, consumer,
-                 uploader=uploader,
-                 publisher=publisher):
-        self._consumer = consumer
-        self.credential = credential
-        self._partial_params = {}
-        self._uploader = uploader
-        self._publisher = publisher
-
-    @property
-    def partial_params(self):
-        return self._partial_params
-
-    def set_partial_parmas(self, *args, **kwargs):
-        self.partial_params.update(*args, **kwargs)
-
-    def upload_video(self, file_path, monitor_callback=None):
-        return self._uploader.upload_video(file_path=file_path, monitor_callback=monitor_callback,
-                                           **self.partial_params)
-
-    def upload_thumbnail(self, vid, file_pointer):
-        return self._uploader.upload_thumbnail(
-            vid=vid, file_pointer=file_pointer, **self.partial_params)
-
-    def publish_video(self, publish_info, file_pointer):
-        return self._publisher.publish_video(
-            publish_info=publish_info,
-            file_pointer=file_pointer,
-            **self.partial_params)
-
-    def publish_uploaded_video(self, publish_info, vid):
-        return self._publisher.publish_uploaded_video(
-            publish_info=publish_info,
-            vid=vid,
-            **self.partial_params)
-
-    def __getattr__(self, name):
-        return partial(
-            self._consumer.apis[name].partial(**self.partial_params))
+    RespWithFailedCodeError)
 
 
 class Credential(object):
     """docstring for Credential"""
 
-    def __init__(self, openid=None, access_token=None,
+    def __init__(self, kind=None, openid=None, access_token=None,
                  expiry=None, refresh_token=None, client_id=None):
         self.access_token = access_token
         self.openid = openid
         self.refresh_token = refresh_token
         self.client_id = client_id
         self.expiry = expiry
+        self.session = None
+        self.kind = kind
 
-    def __str__(self):
+    @property
+    def share_params(self):
+        if self.kind == utils.KIND_3RD_PARTY:
+            return {
+                'access_token': self.access_token,
+                'openid': self.openid
+            }
+        elif self.kind == utils.KIND_CONTENT_SITE:
+            return {
+                'access_token': self.access_token
+            }
+
+    def __str__(self):  # pragma: no cover
         return ('access_token:{self.access_token}\n'
                 'openid:{self.openid}\n'
                 'refresh_token:{self.refresh_token}\n'
@@ -120,6 +86,9 @@ class Credential(object):
 
     # to refresh_token, access_token is not required
     def refresh(self):
+        if self.kind == utils.KIND_CONTENT_SITE:
+            raise RuntimeError('content site credential can not be refreshed')
+
         if not all((self.client_id, self.refresh_token)):
             raise CredentialError('client_id or refresh_token is None')
 
@@ -139,24 +108,3 @@ class Credential(object):
         self.expiry = data.get('expiry')
         self.openid = data['openid']
         self.refresh_token = data.get('refresh_token')
-
-    def to_3rd_party_session(self, consumer=api.consumer):
-        if not all((self.openid, self.access_token)):
-            raise CredentialError('both openid and access_token are required')
-
-        credential_session = CredentialSession(self, consumer)
-        credential_session.set_partial_parmas(
-            access_token=self.access_token,
-            openid=self.openid)
-
-        return credential_session
-
-    def to_content_site_session(self, consumer=api.consumer):
-        if not self.access_token:
-            raise CredentialError('access_token is required')
-
-        credential_session = CredentialSession(self, consumer)
-        credential_session.set_partial_parmas(
-            access_token=self.access_token)
-
-        return credential_session

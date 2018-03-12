@@ -27,7 +27,8 @@ def access_token(resp):
                 - grant_type: authorization_code
                 - client_id
                 - client_secret
-                - code
+                - code:
+                    required: False
     </meta>
     """
     data = resp.json_['data']

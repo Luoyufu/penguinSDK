@@ -22,13 +22,13 @@ here = os.path.abspath(os.path.dirname(__file__))
 
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.rst' is present in your MANIFEST.in file!
-with io.open(os.path.join(here, 'README.md'), encoding='utf-8') as f:
+with io.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = '\n' + f.read()
 
 # Where the magic happens:
 setup(
     name=u'penguinSDK',
-    version='0.1.0',
+    version='1.0.0',
     description=u'python sdk to query API from penguin(腾讯内容开放平台)',
     long_description=long_description,
     author='Yufu Luo',
@@ -36,7 +36,7 @@ setup(
     packages=find_packages(exclude=("tests", "tests.*")),
     install_requires=requires,
     setup_requires=['pytest-runner'],
-    tests_require=['pytest', 'pytest-cov', 'pytest-xdist'],
+    tests_require=['pytest', 'pytest-cov', 'pytest-mock'],
     include_package_data=True,
     license='MIT',
     classifiers=[

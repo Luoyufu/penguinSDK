@@ -1,0 +1,24 @@
+sudo: false
+language: python
+python:
+  - '2.7'
+  - '3.4'
+  - '3.5'
+  - '3.6'
+install:
+  - pip install pipenv --upgrade
+  - pipenv install --dev --skip-lock
+script:
+  - pipenv run py.test --verbose --cov-report term --cov-report xml --junitxml=report.xml --cov=penguinsdk tests/unit
+after_success:
+  - codecov
+deploy:
+  provider: pypi
+  user: yufu_luo
+  password:
+    secure: d/YiQnfZ3PVHCUpPeW8w5riHZquFG3Ob3UWXBvutgCOn8PrWoIWk/MnORH7uo33eXY5O2EOxmN2Chl/pQH2kE7MHQLji9RLnbolKFGe8x/plJkYp6ovh3wb4Kyfn8QoMzRsqPACMugXFki8IRaHHhiFU8gmjB7WH1crVAysZSQvf6Cf74we7awnlFun/WE7Hw9TmIg1mw4g4any8qGoDkos3vwV1570xDXd5KzkiWn4/OxcMqzvQfNGpVCApsXnKT4ALZ01saJarym6BtR51OMgxZ5KihmDpKYjmKLGqjtahD/QLegDsq01EAMphrAEhywCfgDGWrbpApBjF2uuA+9INNazhKjiAksm/A4hBVXyyzRW4a6U6r9VfnFcQX8L/pE/GF8wIPOVRQPfLVw5WGXvwZObQrQxwND+j8ua3PIGeaWcR3KAwFGXlzY6WRErhcfjE6N93zLCm0che/SiQLX9hGwM5lVccud7VghLsRhA528Goedt3Avcz2wV9vCYru8Cp2VBdwO7VVcXJkToc1W6UQKloRULiSck9ShAWxmgSE1CIaVXISzWN908tJ5vkKUFuKz0S5ieAQL0/5kxa92g3F2v6rH+x7r/+5vl0OtQn1HSB+009UnCujgtMTXo5PdihXIuhxiMaTUNq8CeecGixc7geBMnEctVgHD8oPyw=
+  on:
+    tags: true
+    python: '3.6'
+  distributions: 'sdist bdist_wheel'
+

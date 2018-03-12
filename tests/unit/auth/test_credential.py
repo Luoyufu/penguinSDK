@@ -5,9 +5,11 @@ from time import time
 import pytest
 
 from penguinsdk.auth.credential import Credential
-from penguinsdk.auth.credential import CredentialSession
 from penguinsdk.auth.credential import auth
-from penguinsdk.utils import CLOCK_GAP_SECS
+from penguinsdk.utils import (
+    CLOCK_GAP_SECS,
+    KIND_CONTENT_SITE,
+    KIND_3RD_PARTY)
 
 
 @pytest.fixture
@@ -56,17 +58,14 @@ class TestCredential(object):
 
         assert credential.check_token()
 
-    def test_to_3rd_part_session(self):
-        credential = Credential(access_token='access_token', openid='openid')
-        cs = credential.to_3rd_party_session()
+    def test_content_site_share_params(self):
+        credential = Credential(KIND_CONTENT_SITE, access_token='access_token', openid='openid')
+        assert credential.share_params == {'access_token': 'access_token'}
 
-        assert cs.partial_params == {'access_token': 'access_token', 'openid': 'openid'}
-
-    def test_to_content_site_session(self):
-        credential = Credential(access_token='access_token', openid='openid')
-        cs = credential.to_content_site_session()
-
-        assert cs.partial_params == {'access_token': 'access_token'}
+    def test_3rd_party_share_params(self):
+        credential = Credential(KIND_3RD_PARTY, access_token='access_token', openid='openid')
+        assert credential.share_params == {'access_token': 'access_token',
+                                           'openid': 'openid'}
 
     def test_refresh_success(self, mocker):
         credential = Credential(access_token='access_token',
@@ -89,12 +88,3 @@ class TestCredential(object):
         assert credential.access_token == 'new_access_token'
         assert credential.openid == 'new_openid'
         assert credential.refresh_token == 'new_refresh_token'
-
-
-class TestCredentialSession(object):
-
-    def test_set_partial_params(self):
-        cs = CredentialSession(None, None)
-        cs.set_partial_parmas(access_token='access_token')
-
-        assert cs.partial_params == {'access_token': 'access_token'}

@@ -3,6 +3,7 @@
 from .. import endpoints
 from ..doclinks import auth
 from .credential import Credential
+from .. import utils
 
 
 class AuthFlow(object):
@@ -12,20 +13,21 @@ class AuthFlow(object):
         self.client_id = client_id
         self.client_secret = client_secret
 
-    def get_authorization_url(self, redirect_uri, state=''):
+    def get_authorization_url(self, redirect_uri, state=None):
         url = endpoints.get_url('auth', 'authorization')
 
         return '{}?response_type=code&client_id={}&redirect_uri={}{}'.format(
             url, self.client_id, redirect_uri,
             '&state={}'.format(state) if state else '')
 
-    def exchange_access_token(self, code):
+    def exchange_access_token(self, code):  # pragma: no cover
         data = auth.access_token(
             code=code,
             client_id=self.client_id,
             client_secret=self.client_secret)
 
         return Credential(
+            utils.KIND_3RD_PARTY,
             openid=data['openid'],
             access_token=data.get('access_token'),
             expiry=data.get('expiry'),
@@ -39,6 +41,7 @@ class AuthFlow(object):
             client_secret=self.client_secret)
 
         return Credential(
+            utils.KIND_CONTENT_SITE,
             openid=data['openid'],
             access_token=data.get('access_token'),
             expiry=data.get('expiry'),

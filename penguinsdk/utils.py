@@ -10,6 +10,9 @@ from .exceptions import RespContentValueError
 CLOCK_GAP_SECS = 300  # 5 minutes, used to early expired and invoke refresh
 CLOCK_GAP = datetime.timedelta(seconds=CLOCK_GAP_SECS)
 
+KIND_3RD_PARTY = '3rd_party'
+KIND_CONTENT_SITE = 'content_site'
+
 
 def check_resp_code(resp_json, resp):
     """Check the code from tencent resp.
@@ -26,7 +29,7 @@ def check_resp_code(resp_json, resp):
         raise RespWithFailedCodeError(code, resp_json, resp)
 
 
-def utcnow():
+def utcnow():   # pragma: no cover
     """Returns the current UTC datetime.
 
     Returns:
@@ -59,7 +62,7 @@ def parse_expiry_timestamp(expires_in):
             specified.
     """
     if expires_in:
-        return time() + expires_in
+        return int(time()) + expires_in
     else:
         return None
 
@@ -74,7 +77,7 @@ def preprocess_resp(resp):
     resp.json_ = resp_json
 
 
-def calculate_file_hash(hash_factory, file_obj, read_factor=128):
+def calculate_file_hash(hash_factory, file_obj, read_factor=128):   # pragma: no cover
     file_obj.seek(0)
     hash_obj = hash_factory()
     read_size = read_factor * hash_obj.block_size

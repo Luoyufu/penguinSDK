@@ -37,3 +37,8 @@ class TransactionFailedError(PenguinError):
     def __init__(self, transaction_info, msg='transaction failed'):
         super(TransactionFailedError, self).__init__(msg)
         self.transaction_info = transaction_info
+
+
+class UnsupporttedApiError(PenguinError):
+    def __init__(self, msg):
+        super(UnsupporttedApiError, self).__init__(msg)
