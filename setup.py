@@ -28,7 +28,7 @@ with io.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
 # Where the magic happens:
 setup(
     name=u'penguinSDK',
-    version='1.0.0',
+    version='1.0.1',
     description=u'python sdk to query API from penguin(腾讯内容开放平台)',
     long_description=long_description,
     author='Yufu Luo',
