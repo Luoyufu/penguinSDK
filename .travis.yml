@@ -1,24 +1,24 @@
 sudo: false
 language: python
 python:
-  - '2.7'
-  - '3.4'
-  - '3.5'
-  - '3.6'
+- '2.7'
+- '3.4'
+- '3.5'
+- '3.6'
 install:
-  - pip install pipenv --upgrade
-  - pipenv install --dev --skip-lock
+- pip install pipenv --upgrade
+- pipenv install --dev --skip-lock
 script:
-  - pipenv run py.test --verbose --cov-report term --cov-report xml --cov=penguinsdk tests/unit
+- pipenv run py.test --verbose --cov-report term --cov-report xml --cov=penguinsdk
+  tests/unit
 after_success:
-  - codecov
+- codecov
 deploy:
   provider: pypi
   user: yufu_luo
-  password:
-    secure: d/YiQnfZ3PVHCUpPeW8w5riHZquFG3Ob3UWXBvutgCOn8PrWoIWk/MnORH7uo33eXY5O2EOxmN2Chl/pQH2kE7MHQLji9RLnbolKFGe8x/plJkYp6ovh3wb4Kyfn8QoMzRsqPACMugXFki8IRaHHhiFU8gmjB7WH1crVAysZSQvf6Cf74we7awnlFun/WE7Hw9TmIg1mw4g4any8qGoDkos3vwV1570xDXd5KzkiWn4/OxcMqzvQfNGpVCApsXnKT4ALZ01saJarym6BtR51OMgxZ5KihmDpKYjmKLGqjtahD/QLegDsq01EAMphrAEhywCfgDGWrbpApBjF2uuA+9INNazhKjiAksm/A4hBVXyyzRW4a6U6r9VfnFcQX8L/pE/GF8wIPOVRQPfLVw5WGXvwZObQrQxwND+j8ua3PIGeaWcR3KAwFGXlzY6WRErhcfjE6N93zLCm0che/SiQLX9hGwM5lVccud7VghLsRhA528Goedt3Avcz2wV9vCYru8Cp2VBdwO7VVcXJkToc1W6UQKloRULiSck9ShAWxmgSE1CIaVXISzWN908tJ5vkKUFuKz0S5ieAQL0/5kxa92g3F2v6rH+x7r/+5vl0OtQn1HSB+009UnCujgtMTXo5PdihXIuhxiMaTUNq8CeecGixc7geBMnEctVgHD8oPyw=
   on:
     tags: true
     python: '3.6'
-  distributions: 'sdist bdist_wheel'
-
+  distributions: sdist bdist_wheel
+  password:
+    secure: syrxcmWqY2szafO+0/xRmfrXr9uliZJRnYkKDbgtiJB/l+95vtVNseM22JRS/g0oGg1a1RKiTcXCuXRYdShBe9aa0qZ1IX+fGm+t1X+tZPk0d2wHCkOvqwuRMHXEK4YOT1qpx8en46dImVjyYanaBMPgfP1iqgS+dPiN87MyTQXrQsFLu3muTqaXpjgXWVodnhlt8wH91F2+DHqfsmQ95EEh3FNp2k0Z6wt3SZMljcZ1YA5YwM+lWdF2HIJSjn30TWFHIy3EByzHtY+8gUpJw6thPN/sWeW/cksv9V1nDHXHOR/5WIUN+nZI04AyebF4OS5OAvva2IKL+GXRQg97roFVreUytlJErIk1MjqVLw7Q+kqwByuDcpz/slO4RtRjf8NdPXoCylW/4FWlSBt9t2K0GQpEBN8LMAEorZ46ofLC1vtROZvLqzhO9NicBRQ57j/NNRMTBN25L+0037c0tvEIyAeabiceci/5yZ1ysoLiNjwZ7JfSh7xzWWgZW0l4dokj2sWQJWFTe3qCkwcU2EfqOqMtRssoddjNWhvRk0+NiC8aN70ZFldFJfNMBwDt6bAfMampyrLnCaOyU/Dvsqw1YqIfdI+Nus3q0TSJhWZlE2GYnlxW4dkPXuF5MmuXXfG9D+ZLMROV/8/PqqzWDJEVw+VrXzJphMM67M9QSIg=
