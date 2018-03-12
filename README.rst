@@ -1,6 +1,20 @@
-*********************
-PenguinSDK/企鹅号SDK/腾讯内容开放平台SDK
-*********************
+************
+PenguinSDK(腾讯内容开放平台SDK)
+************
+
+.. image:: https://travis-ci.org/Luoyufu/penguinSDK.svg?branch=master
+    :target: https://travis-ci.org/Luoyufu/penguinSDK
+
+.. image:: https://codecov.io/gh/Luoyufu/penguinSDK/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/Luoyufu/penguinSDK
+
+.. image:: https://img.shields.io/pypi/v/penguinSDK.svg
+  :target: https://pypi.python.org/pypi/penguinSDK
+
+.. image:: https://img.shields.io/pypi/pyversions/penguinSDK.svg
+  :target: https://pypi.python.org/pypi/penguinSDK
+
+
 `腾讯内容开放平台API <https://open.om.qq.com/resources/resourcesCenter>`_ 的Python SDK。
 
 概述
